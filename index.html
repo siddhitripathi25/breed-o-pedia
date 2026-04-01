@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Breed-o-Pedia - Dog Breed Encyclopedia</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐕 Breed-o-Pedia</h1>
+            <p class="subtitle">Your complete guide to dog breeds</p>
+            <button id="randomBtn" class="random-btn">🎲 Random Dog</button>
+        </header>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="breedSelect">Select Breed:</label>
+                <select id="breedSelect">
+                    <option value="">Loading breeds...</option>
+                </select>
+            </div>
+
+            <div class="filter-group" id="subBreedGroup" style="display: none;">
+                <label for="subBreedSelect">Select Sub-breed:</label>
+                <select id="subBreedSelect">
+                    <option value="">All sub-breeds</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="loadingState" class="loader" style="display: none;">
+            <div class="spinner"></div>
+            <p>Fetching adorable doggos...</p>
+        </div>
+
+        <div id="errorState" class="error" style="display: none;">
+            <p>⚠️ Oops! Something went wrong. Please try again.</p>
+        </div>
+
+        <div id="gallery" class="gallery"></div>
+
+        <div id="loadMoreContainer" style="display: none;">
+            <button id="loadMoreBtn" class="load-more">Load More Images</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
