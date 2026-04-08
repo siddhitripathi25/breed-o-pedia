@@ -9,10 +9,21 @@
 <body>
     <div class="container">
         <header>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
             <h1>🐕 Breed-o-Pedia</h1>
             <p class="subtitle">Your complete guide to dog breeds</p>
-            <button id="randomBtn" class="random-btn">🎲 Random Dog</button>
+            <div class="header-buttons">
+                <button id="randomBtn" class="random-btn">🎲 Random Dog</button>
+                <button id="toggleHeatmapBtn" class="heatmap-btn">📊 Show Heatmap</button>
+            </div>
         </header>
+
+        <section id="votingHeatmap" class="voting-heatmap" style="display: none;">
+            <h2>📊 Global Voting Heatmap</h2>
+            <div id="heatmapContainer" class="heatmap-container">
+                <!-- Bars will be generated here -->
+            </div>
+        </section>
 
         <div class="filters">
             <div class="filter-group">

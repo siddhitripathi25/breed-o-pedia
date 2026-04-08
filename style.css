@@ -21,11 +21,196 @@ body {
 }
 
 header {
+    position: relative;
     text-align: center;
     margin-bottom: 30px;
     padding: 20px;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     border-radius: 15px;
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+body.dark-mode .theme-toggle {
+    background: #2b2b2b;
+    border-color: #4a4a4a;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+/* Voting Heatmap Styles */
+.voting-heatmap {
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.voting-heatmap h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.heatmap-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.heatmap-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.heatmap-label {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.heatmap-label .score {
+    color: #777;
+    font-weight: bold;
+}
+
+.stats-bar-container {
+    height: 12px;
+    background: #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+}
+
+.stats-bar {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease;
+}
+
+.stats-bar.hot {
+    background: #ff6b6b;
+}
+
+.stats-bar.cold {
+    background: #4ecdc4;
+}
+
+.stats-bar.neutral {
+    background: #a0aec0;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background: linear-gradient(135deg, #1e1e19 0%, #2f2a48 100%);
+    color: #f5f5f5;
+}
+
+body.dark-mode .container {
+    background: #222;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+body.dark-mode header {
+    background: linear-gradient(135deg, #333 0%, #2b2b2b 100%);
+}
+
+body.dark-mode h1 {
+    color: #fff;
+}
+
+body.dark-mode .subtitle {
+    color: #ccc;
+}
+
+body.dark-mode .filter-group label {
+    color: #ddd;
+}
+
+body.dark-mode select {
+    background-color: #333;
+    color: #fff;
+    border-color: #555;
+}
+
+body.dark-mode select option {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark-mode .card {
+    background: #2a2a2a;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+}
+
+body.dark-mode .card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+
+body.dark-mode .vote-buttons {
+    border-top: 1px solid #444;
+}
+
+body.dark-mode .voting-heatmap {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+body.dark-mode .voting-heatmap h2 {
+    color: #fff;
+}
+
+body.dark-mode .heatmap-label {
+    color: #ddd;
+}
+
+body.dark-mode .heatmap-label .score {
+    color: #aaa;
+}
+
+body.dark-mode .stats-bar-container {
+    background: #444;
+}
+
+body.dark-mode .loader, body.dark-mode .spinner + p {
+    color: #fff;
+}
+
+body.dark-mode .spinner {
+    border: 3px solid #444;
+    border-top: 3px solid #aebfff;
+}
+
+body.dark-mode .error {
+    background: #3e1b1b;
+    color: #ff9e9e;
 }
 
 h1 {
@@ -39,11 +224,16 @@ h1 {
     font-size: 1.1rem;
 }
 
-.random-btn {
+.header-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
     margin-top: 15px;
+}
+
+.random-btn, .heatmap-btn {
     padding: 12px 24px;
     font-size: 1.1rem;
-    background: #ff6b6b;
     color: white;
     border: none;
     border-radius: 50px;
@@ -51,9 +241,26 @@ h1 {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.random-btn {
+    background: #ff6b6b;
+}
+
 .random-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255,107,107,0.4);
+}
+
+.heatmap-btn {
+    background: #4ecdc4;
+}
+
+.heatmap-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(78,205,196,0.4);
+}
+
+body.dark-mode .heatmap-btn {
+    background: #3a978f;
 }
 
 .filters {

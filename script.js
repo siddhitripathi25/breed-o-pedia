@@ -16,7 +16,9 @@ const loadingState = document.getElementById('loadingState');
 const errorState = document.getElementById('errorState');
 const loadMoreContainer = document.getElementById('loadMoreContainer');
 const randomBtn = document.getElementById('randomBtn');
+const toggleHeatmapBtn = document.getElementById('toggleHeatmapBtn');
 const loadMoreBtn = document.getElementById('loadMoreBtn');
+let isHeatmapVisible = false;
 
 function showLoading() {
     loadingState.style.display = 'block';
@@ -142,7 +144,89 @@ function handleVote(imageUrl, isHot) {
     }
     votes[imageUrl] += isHot ? 1 : -1;
     saveVotes();
-    renderGallery(); 
+    renderGallery();
+    renderVotingHeatmap();
+}
+
+function extractBreedFromUrl(url) {
+    const parts = url.split('/');
+    if (parts.length >= 6 && parts[4]) {
+        return parts[4].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    }
+    return 'Unknown';
+}
+
+function calculateBreedStats() {
+    const stats = {};
+    for (const [url, score] of Object.entries(votes)) {
+        const breed = extractBreedFromUrl(url);
+        if (!stats[breed]) {
+            stats[breed] = 0;
+        }
+        stats[breed] += score;
+    }
+    return Object.entries(stats).sort((a, b) => b[1] - a[1]);
+}
+
+function renderVotingHeatmap() {
+    const heatmapSection = document.getElementById('votingHeatmap');
+    const heatmapContainer = document.getElementById('heatmapContainer');
+
+    if (!isHeatmapVisible) {
+        heatmapSection.style.display = 'none';
+        return;
+    }
+
+    const sortedStats = calculateBreedStats();
+
+    if (sortedStats.length === 0) {
+        heatmapSection.style.display = 'none';
+        return;
+    }
+
+    heatmapSection.style.display = 'block';
+    
+    // Handle cases if we have positive max and negative min
+    const maxScore = Math.max(1, ...sortedStats.map(stat => Math.abs(stat[1])));
+
+    let displayStats = [];
+    if (sortedStats.length > 5) {
+        displayStats.push(sortedStats[0], sortedStats[1], sortedStats[2]);
+        displayStats.push(sortedStats[sortedStats.length - 2], sortedStats[sortedStats.length - 1]);
+    } else {
+        displayStats = sortedStats;
+    }
+
+    const seen = new Set();
+    displayStats = displayStats.filter(stat => {
+        if (!stat) return false;
+        if (seen.has(stat[0])) return false;
+        seen.add(stat[0]);
+        return true;
+    });
+
+    heatmapContainer.innerHTML = displayStats.map(([breed, score]) => {
+        const percentage = (Math.abs(score) / maxScore) * 100;
+        let barClass = 'neutral';
+        let rankLabel = '';
+        if (score > 0) barClass = 'hot';
+        else if (score < 0) barClass = 'cold';
+        
+        if (breed === sortedStats[0][0] && score > 0) rankLabel = ' 🥇 Most Loved';
+        else if (breed === sortedStats[sortedStats.length - 1][0] && score < 0) rankLabel = ' 👎 Least Liked';
+
+        return `
+            <div class="heatmap-item">
+                <div class="heatmap-label">
+                    <span>${breed}${rankLabel}</span>
+                    <span class="score">${score > 0 ? '+' : ''}${score}</span>
+                </div>
+                <div class="stats-bar-container">
+                    <div class="stats-bar ${barClass}" style="width: ${percentage}%"></div>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 function renderGallery() {
@@ -203,9 +287,37 @@ function onSubBreedChange() {
 breedSelect.addEventListener('change', onBreedChange);
 subBreedSelect.addEventListener('change', onSubBreedChange);
 randomBtn.addEventListener('click', fetchRandomImage);
+toggleHeatmapBtn.addEventListener('click', () => {
+    isHeatmapVisible = !isHeatmapVisible;
+    if (isHeatmapVisible) {
+        toggleHeatmapBtn.textContent = 'Hide Heatmap';
+        renderVotingHeatmap();
+    } else {
+        toggleHeatmapBtn.textContent = '📊 Show Heatmap';
+        document.getElementById('votingHeatmap').style.display = 'none';
+    }
+});
 loadMoreBtn.addEventListener('click', loadMoreImages);
 
 window.handleVote = handleVote;
 
+const themeToggleBtn = document.getElementById('themeToggle');
+const currentTheme = localStorage.getItem('theme');
 
+if (currentTheme === 'dark-mode') {
+    document.body.classList.add('dark-mode');
+    themeToggleBtn.textContent = '☀️';
+}
+
+themeToggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    if (document.body.classList.contains('dark-mode')) {
+        themeToggleBtn.textContent = '☀️';
+        localStorage.setItem('theme', 'dark-mode');
+    } else {
+        themeToggleBtn.textContent = '🌙';
+        localStorage.setItem('theme', 'light-mode');
+    }
+});
 fetchBreeds();
+renderVotingHeatmap();
