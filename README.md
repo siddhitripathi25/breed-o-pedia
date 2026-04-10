@@ -24,7 +24,7 @@ A comprehensive dog breed encyclopedia that lets you explore various dog breeds,
 
 ## 🌐 Live Demo
 
-[View Live Demo](https://siddhitripathi25.github.io/breed-o-pedia/)
+[View Live Demo](https://wap-individual-project.vercel.app/)
 
 ## 📦 Installation
 
